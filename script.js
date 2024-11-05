@@ -49,7 +49,7 @@ function onPlayerReady() {
         if (timeLeft <= 0) {
             clearInterval(interval);
             const secondsSinceStart = Math.floor((now - startTime) / 1000);
-            player.mute();  // Autoplay workaround
+            player.mute();
             player.seekTo(secondsSinceStart, true);
             player.playVideo();
             setTimeout(() => player.unMute(), 1000);
