@@ -36,6 +36,25 @@ function loadYouTubePlayer(playlistId, startVideoIndex) {
     };
 }
 
+let adjustmentTime = 0;  // Variable to store the adjustment time in seconds
+
+document.getElementById("add-time").addEventListener("click", () => {
+    adjustTiming(0.1);  // Add 100 milliseconds
+});
+
+document.getElementById("subtract-time").addEventListener("click", () => {
+    adjustTiming(-0.1);  // Subtract 100 milliseconds
+});
+
+function adjustTiming(seconds) {
+    adjustmentTime += seconds;  // Update the adjustment time
+
+    // Get current playback time and apply adjustment
+    const currentTime = player.getCurrentTime();
+    player.seekTo(currentTime + seconds, true);
+}
+
+// Modify countdown logic to include the adjustment time
 function onPlayerReady() {
     const interval = setInterval(() => {
         const now = new Date();
@@ -46,15 +65,17 @@ function onPlayerReady() {
             ? `Starts in ${timeLeft} seconds`
             : "Playing!";
 
+        // Start playback at countdown end
         if (timeLeft <= 0) {
             clearInterval(interval);
-            const secondsSinceStart = Math.floor((now - startTime) / 1000);
-            player.mute();
+            const secondsSinceStart = Math.floor((now - startTime) / 1000) + adjustmentTime;
+            player.mute();  // Autoplay workaround
             player.seekTo(secondsSinceStart, true);
             player.playVideo();
-            setTimeout(() => player.unMute(), 1000);
+            setTimeout(() => player.unMute(), 1000);  // Unmute after start
         }
     }, 500);
 }
+
 
 loadConfig();
